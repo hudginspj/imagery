@@ -3,10 +3,13 @@ import os
 from skimage import io, transform, filters, exposure, color
 import numpy as np 
             
+RAWDIR = "all"
+OUTDIR = "out"
+
 def get_images():
     Image.MAX_IMAGE_PIXELS = None
     images = {}
-    for fn in os.listdir("all"):
+    for fn in os.listdir(RAWDIR):
         if fn.endswith("TIF"):
             adj_fn = fn.split("_B")[1]
             if len(adj_fn) == 5:
@@ -14,7 +17,7 @@ def get_images():
             adj_fn = adj_fn[:-4]
             print(adj_fn)
 
-            image = io.imread("all/" + fn)
+            image = io.imread(RAWDIR + "/" + fn)
 
             if fn.endswith("8.TIF"):
                 pass
@@ -25,7 +28,7 @@ def get_images():
             
                 #io.imsave("edited/"+adj_fn +".png", region)
             adhist = exposure.equalize_adapthist(region)
-            io.imsave("edited/adhist_"+adj_fn +".png", adhist)
+            io.imsave(OUTDIR + "/adhist_"+adj_fn +".png", adhist)
             
             images[adj_fn] = adhist
 
@@ -46,22 +49,24 @@ def rgbtest():
     g = images['05']
     b = images['06']
     zipped = np.dstack((r, g, b))
-    io.imsave("edited/color.png", zipped)
+    io.imsave(OUTDIR + "/color.png", zipped)
 
     # r = images['08']
     # g = images['06']
     # b = images['05']
     b2 = 1-(2*images['05'])
-    io.imsave("edited/inv.png", b2)
+    io.imsave(OUTDIR + "/inv.png", b2)
 
-    io.imsave("edited/color2.png", 
+    io.imsave(OUTDIR + "/color2.png", 
         np.dstack((images['08'], images['05'], images['06'])))
-    io.imsave("edited/color3.png", 
+    io.imsave(OUTDIR + "/color3.png", 
         np.dstack((images['04'], images['05'], images['08'])))
-    io.imsave("edited/color4.png", 
+    io.imsave(OUTDIR + "/color4.png", 
         np.dstack((images['08'], images['05'], images['04'])))
-    io.imsave("edited/color6.png", 
+    io.imsave(OUTDIR + "/color6.png", 
         np.dstack((images['04'], images['08'], b2)))
+    io.imsave(OUTDIR + "/true_color.png", 
+        np.dstack((images['04'], images['03'], images['02'])))
 
 def sampler():
     images = get_images()
@@ -81,13 +86,7 @@ def sampler():
 
     zipped = np.dstack((r, g, b))
     #zipped = np.dstack((sample, sample, sample))
-    io.imsave("edited/sample.png", zipped)
+    io.imsave(OUTDIR + '/sample.png', zipped)
 
-sampler()
-# l = list(range(10))
-# l = 6 + np.zeros((5,5))
-# print(l)
-# l = np.vectorize(lambda x: min(x, 5))(l)
-# print(l)
-
-
+rgbtest()
+#sampler()
