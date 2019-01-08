@@ -6,7 +6,7 @@ import numpy as np
 RAWDIR = "all"
 OUTDIR = "out"
 
-def get_images():
+def get_images(r,l,t,b):
     Image.MAX_IMAGE_PIXELS = None
     raws = {}
     exps = {}
@@ -22,9 +22,11 @@ def get_images():
 
             if fn.endswith("8.TIF"):
                 pass
-                region = image[3500*2:3900*2, 800*2:1200*2]
+                # region = image[3500*2:3900*2, 800*2:1200*2]
+                region = image[r*2:l*2, t*2:b*2]
             else:
-                region = image[3500:3900, 800:1200]
+                # region = image[3500:3900, 800:1200]
+                region = image[r:l, t:b]
                 region = transform.resize(region, (800,800), anti_aliasing=False)
             
                 #io.imsave("edited/"+adj_fn +".png", region)
